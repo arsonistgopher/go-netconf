@@ -4,12 +4,10 @@ go:
   - 1.8
   - 1.9
   - "1.10"
-  - tip
+  - master
 
 matrix:
     fast_finish: true
-    allow_failures:
-        - go: tip
 
 install: go get -d -v -t ./... && go build -v ./...
 
