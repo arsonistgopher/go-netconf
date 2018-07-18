@@ -52,8 +52,6 @@ func (d *DriverSSH) Dial() error {
 		return err
 	}
 
-	// err = d.Transport.SetupSession()
-
 	if err != nil {
 		return err
 	}
@@ -84,9 +82,15 @@ func (d *DriverSSH) DialTimeout() error {
 
 // Close function closes the socket
 func (d *DriverSSH) Close() error {
-	// Close the SSH Session if we have one}
-
+	// Close the SSH Transport if we have one
 	err := d.Transport.Close()
+
+	if err != nil {
+		return err
+	}
+
+	// Close the SSH Session if we have one
+	err = d.Session.Close()
 
 	if err != nil {
 		return err

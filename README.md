@@ -1,12 +1,12 @@
 # netconf
 
-[![GoDoc](https://godoc.org/github.com/Juniper/go-netconf/netconf?status.svg)](https://godoc.org/github.com/Juniper/go-netconf/netconf)
+[![GoDoc](https://godoc.org/github.com/arsonistgopher/go-netconf/netconf?status.svg)](https://godoc.org/github.com/arsonistgopher/go-netconf/netconf)
 [![Report Card](https://goreportcard.com/badge/github.com/Juniper/go-netconf/netconf)](https://goreportcard.com/report/github.com/Juniper/go-netconf/netconf)
-[![Build Status](https://travis-ci.org/Juniper/go-netconf.png)](https://travis-ci.org/Juniper/go-netconf)
+[![Build Status](https://travis-ci.org/arsonistgopher/go-netconf.png)](https://travis-ci.org/arsonistgopher/go-netconf)
 
 This library is a simple NETCONF client based on [RFC6241](http://tools.ietf.org/html/rfc6241) and [RFC6242](http://tools.ietf.org/html/rfc6242) (although not fully compliant yet).
 
-> **Note:** this is currently pre-alpha release.  API and features may and probably will change.  Suggestions and pull requests are welcome.
+> **Note:** This library is a fork of the Juniper go-netconf library. This fork is open to pull requests and suggestions. Libraries like this should be easy to use and this library has a nicer abstraction layer using a 'Driver' interface. This is work-in-progress.
 
 ## Features
 * Support for SSH transport using go.crypto/ssh. (Other transports are planned).
@@ -21,8 +21,24 @@ This library is a simple NETCONF client based on [RFC6241](http://tools.ietf.org
 ## Example
 * See examples in `examples/` directory.
 
+This is the interface that `go-netconf` uses.
+
+```go
+// Driver interface for building drivers that are self-contained from a user's perspective.
+type Driver interface {
+	Lock(ds string) (*rpc.RPCReply, error)
+	Unlock(ds string) (*rpc.RPCReply, error)
+
+	Close() error
+	Dial() error
+	DialTimeout() error
+	SendRaw(rawxml string) (*rpc.RPCReply, error)
+	GetConfig() (*rpc.RPCReply, error)
+}
+```
+
 ## Documentation
-You can view full API documentation at GoDoc: http://godoc.org/github.com/Juniper/go-netconf/netconf
+You can view full API documentation at GoDoc: http://godoc.org/github.com/arsonistgopher/go-netconf/netconf
 
 ## License
 (BSD 2)
