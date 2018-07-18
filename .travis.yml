@@ -8,7 +8,7 @@ go:
 matrix:
     fast_finish: true
 
-install: go get -t -v ./... && go build -v ./...
+install: go get -t -v ./...
 
 before_script:
   - cd go-netconf
@@ -21,4 +21,4 @@ script:
   - go vet ./...                             # go vet is the official Go static analyzer
   - golint ./...                             # one last linter
   - cd examples/driver
-  - go build ./...		             # Specifically build the demo
+  - go build -v ./...		             # Specifically build the demo
