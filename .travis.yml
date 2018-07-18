@@ -8,16 +8,10 @@ go:
 matrix:
     fast_finish: true
 
-before_install:
-  - CWD=$(pwd)
-  - go get github.com/arsonistgopher/go-netconf
-  - cd $GOPATH/src/github.com/arsonistgopher/go-netconf/examples/driver
-
 install: 
   - go get -t -v ./...
 
 before_script:
-  - cd $CWD/go-netconf
   - GO_FILES=$(find . -iname '*.go' -type f) # All the .go files,
   - go get github.com/golang/lint/golint     # Linter
 
