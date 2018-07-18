@@ -9,6 +9,8 @@ go:
 matrix:
   allow_failures:
     - go: master
+    - go: "1.8.x"
+    - go: "1.7.x"
   fast_finish: true
 
 install: 
