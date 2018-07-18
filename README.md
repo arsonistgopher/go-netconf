@@ -15,8 +15,15 @@ This library is a simple NETCONF client based on [RFC6241](http://tools.ietf.org
 * Independent of XML library.  Free to choose encoding/xml or another third party library to parse the results.
 
 ## Install
-* Requires Go 1.4 or later!
-* `go get github.com/Juniper/go-netconf/netconf`
+* Requires Go 1.4 or later
+* Tests pass for 1.8 and later using Travis-CI (this is WIP)
+* Please use `git clone` because this is a library and not an application
+
+```bash
+cd $GOPATH/src/github.com
+mkdir arsonistgopher && cd arsonistgopher
+git clone https://github.com/arsonistgopher/go-netconf
+```
 
 ## Example
 * See examples in `examples/` directory.
@@ -37,8 +44,10 @@ type Driver interface {
 }
 ```
 
+Please note, that two transport types exist; one for direct use on Junos and the other socket based over SSH. This driver mechanism promotes the easy interchange of lower level transports without messing about.
+
 ## Documentation
-You can view full API documentation at GoDoc: http://godoc.org/github.com/arsonistgopher/go-netconf/netconf
+You can view full API documentation at GoDoc: http://godoc.org/github.com/arsonistgopher/go-netconf
 
 ## License
 (BSD 2)
