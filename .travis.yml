@@ -14,7 +14,7 @@ matrix:
   fast_finish: true
 
 install: 
-  - go get -t -v ./...
+  - go get -d -t -v ./...
 
 before_script:
   - go get github.com/golang/lint/golint     # Linter
