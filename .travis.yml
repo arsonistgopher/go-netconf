@@ -10,7 +10,7 @@ matrix:
 
 before_install:
   - CWD=$(pwd)
-  - go get https://github.com/arsonistgopher/go-netconf
+  - go get github.com/arsonistgopher/go-netconf
   - cd $GOPATH/src/github.com/arsonistgopher/go-netconf/examples/driver
 
 install: 
