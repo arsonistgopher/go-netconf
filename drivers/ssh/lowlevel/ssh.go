@@ -58,7 +58,7 @@ func (t *TransportSSH) Close() error {
 // following format <host>:<port (e.g 172.16.1.1:22)
 //
 // config takes a ssh.ClientConfig connection. See documentation for
-// go.crypto/ssh for documenation.  There is a helper function SSHConfigPassword
+// go.crypto/ssh for documentation.  There is a helper function SSHConfigPassword
 // thar returns a ssh.ClientConfig for simple username/password authentication
 func (t *TransportSSH) DialSSH(target string, config *ssh.ClientConfig, port int) error {
 	if !strings.Contains(target, ":") {
@@ -186,8 +186,7 @@ func SSHConfigPubKeyFile(user string, file string, passphrase string) (*ssh.Clie
 	}
 
 	if x509.IsEncryptedPEMBlock(block) {
-		b := block.Bytes
-		b, err = x509.DecryptPEMBlock(block, []byte(passphrase))
+		b, err := x509.DecryptPEMBlock(block, []byte(passphrase))
 		if err != nil {
 			return nil, err
 		}
