@@ -225,7 +225,7 @@ configuration check-out failed: (missing mandatory statements)
 
 func TestNewRPCReply(t *testing.T) {
 	for _, tc := range RPCReplytests {
-		reply, err := newRPCReply([]byte(tc.rawXML), false)
+		reply, err := NewRPCReply([]byte(tc.rawXML), false)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
