@@ -37,10 +37,6 @@ func (d *DriverJunos) Dial() error {
 		return err
 	}
 
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 

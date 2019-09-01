@@ -57,10 +57,6 @@ func (d *DriverSSH) Dial() error {
 		return err
 	}
 
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
