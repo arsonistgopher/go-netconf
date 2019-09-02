@@ -61,17 +61,20 @@ func (s *Session) Exec(methods ...rpc.RPCMethod) (*rpc.RPCReply, error) {
 }
 
 // NewSession creates a new NETCONF session using the provided transport layer.
-func NewSession(t transport.Transport) *Session {
+func NewSession(t transport.Transport) (*Session, error) {
 	s := new(Session)
 	s.Transport = t
 
 	// Receive Servers Hello message
-	serverHello, _ := t.ReceiveHello()
+	serverHello, err := t.ReceiveHello()
+	if err != nil {
+		return nil, err
+	}
 	s.SessionID = serverHello.SessionID
 	s.ServerCapabilities = serverHello.Capabilities
 
 	// Send our hello using default capabilities.
 	t.SendHello(&transport.HelloMessage{Capabilities: transport.DefaultCapabilities})
 
-	return s
+	return s, nil
 }
