@@ -42,13 +42,16 @@ type TransportSSH struct {
 func (t *TransportSSH) Close() error {
 	// Close the SSH Session if we have one
 	if t.SSHSession != nil {
-		if err := t.SSHSession.Close(); err != nil {
+		if err := t.SSHSession.Close(); err != nil && err.Error() != "EOF" {
 			return err
 		}
 	}
 
-	// Close the socket
-	return t.SSHClient.Close()
+	// Forcefully close and ignore any errors. This is playing up a bit. I think there's a race condition somewhere.
+	// TODO(investigate dodgy errors)
+	t.SSHClient.Close()
+
+	return nil
 }
 
 // DialSSH connects and establishes SSH sessions
