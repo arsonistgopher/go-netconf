@@ -54,5 +54,11 @@ func Dial() (*session.Session, error) {
 	if err != nil {
 		return nil, err
 	}
-	return session.NewSession(&t), nil
+
+	session, err := session.NewSession(&t)
+	if err != nil {
+		return nil, err
+	}
+
+	return session, nil
 }
