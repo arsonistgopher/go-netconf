@@ -51,12 +51,7 @@ func (d *DriverSSH) Dial() error {
 		return err
 	}
 
-	d.Session, err = lowlevel.Dial(d.Host, d.SSHConfig, d.Port)
-
-	if err != nil {
-		return err
-	}
-
+	d.Session, err = session.NewSession(d.Transport)
 	if err != nil {
 		return err
 	}
