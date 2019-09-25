@@ -3,7 +3,6 @@ package netconf
 import (
 	"fmt"
 	"net"
-	"os"
 	"time"
 
 	lowlevel "github.com/arsonistgopher/go-netconf/drivers/ssh/lowlevel"
@@ -44,33 +43,17 @@ func (d *DriverSSH) SetDatastore(ds string) error {
 func (d *DriverSSH) Dial() error {
 	d.Target = fmt.Sprintf("%s:%d", d.Host, d.Port)
 
-	f, _ := os.OpenFile("open.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-	f.WriteString("DialSSH()\r\n")
-
 	err := d.Transport.DialSSH(d.Host, d.SSHConfig, d.Port)
 
 	if err != nil {
 		return err
 	}
 
-	f.WriteString(fmt.Sprintf("d.Transport.DialSSH SSHClient\r\n: %+v\r\n\r\n", d.Transport.SSHClient))
-
-	if err != nil {
-		panic(err)
-		return err
-	}
-
 	d.Session, err = session.NewSession(d.Transport)
+
 	if err != nil {
-		panic(err)
 		return err
 	}
-
-	f.WriteString(fmt.Sprintf("Logging d.Transport: %+v <---> Logging d.Session.Transport: %+v\r\n\r\n", d.Transport, d.Session.Transport))
-	f.WriteString(fmt.Sprintf("Opened Transport Session: %+v\r\n\r\n", d.Transport.SSHSession))
-
-	f.Sync()
-	f.Close()
 
 	return nil
 }
@@ -98,14 +81,6 @@ func (d *DriverSSH) DialTimeout() error {
 
 // Close function closes the socket
 func (d *DriverSSH) Close() error {
-
-	f, _ := os.OpenFile("close.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-
-	f.WriteString(fmt.Sprintf("Closing Transport Client: %+v \r\n\r\n", d.Transport.SSHClient))
-	f.WriteString(fmt.Sprintf("Closing Transport Session: %+v\r\n\r\n", d.Transport.SSHSession))
-	f.WriteString(fmt.Sprintf("Closing Session Transport: %+v \r\n\r\n", d.Session.Transport))
-	f.Sync()
-	f.Close()
 
 	// Close the SSH Session if we have one
 	err := d.Session.Close()

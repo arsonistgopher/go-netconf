@@ -11,7 +11,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"os"
 	"regexp"
 )
 
@@ -81,12 +80,6 @@ func (t *TransportBasicIO) SendHello(hello *HelloMessage) error {
 
 // Close over transport
 func (t *TransportBasicIO) Close() error {
-
-	f, _ := os.OpenFile("close.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-
-	f.WriteString("Closing NETCONF Session with KILL: \r\n")
-	f.Sync()
-	f.Close()
 
 	val := []byte("</kill-session>")
 

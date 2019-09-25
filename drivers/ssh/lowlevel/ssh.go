@@ -51,24 +51,14 @@ func (t *TransportSSH) Close() error {
 	// Close and check for nil. Even though closed, it will retain data for session etc.
 	err := t.SSHClient.Close()
 
-	f, _ := os.OpenFile("errors.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-
-	if err == nil {
-		f.WriteString("Error was nil\r\n")
-	}
-
 	if err != nil {
-		f.WriteString(fmt.Sprintf("Error was: %+v\r\n", err))
-		panic(err)
+		return (err)
 	}
 
 	err = t.TransportBasicIO.Close()
 	if err != nil {
 		return (err)
 	}
-
-	f.Sync()
-	f.Close()
 
 	return nil
 }
@@ -100,17 +90,10 @@ func (t *TransportSSH) DialSSH(target string, config *ssh.ClientConfig, port int
 
 	t.SSHClient = SSHClient
 
-	f, _ := os.OpenFile("open.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-
-	f.WriteString(fmt.Sprintf("Native TransportSSH{} Client: %+v\r\n\r\n", t.SSHClient))
-
 	err = t.SetupSession()
 	if err != nil {
 		return err
 	}
-	f.WriteString(fmt.Sprintf("Post SetupSession() TransportSSH{} Client: %+v\r\n\r\n", t.SSHClient))
-	f.Sync()
-	f.Close()
 
 	return nil
 }
