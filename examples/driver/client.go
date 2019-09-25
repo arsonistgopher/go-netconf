@@ -103,4 +103,6 @@ func main() {
 		fmt.Print(d1)
 	}
 
+	nconf.Close()
+
 }

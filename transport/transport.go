@@ -11,6 +11,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"os"
 	"regexp"
 )
 
@@ -48,7 +49,7 @@ type TransportBasicIO struct {
 }
 
 // Send a well formated NETCONF rpc message as a slice of bytes adding on the
-// nessisary framining messages.
+// neccesary fraiming messages.
 func (t *TransportBasicIO) Send(data []byte) error {
 	t.Write(data)
 	// Pad to make sure the msgSeparator isn't sent across a 4096-byte boundary
@@ -75,6 +76,23 @@ func (t *TransportBasicIO) SendHello(hello *HelloMessage) error {
 	header := []byte(xml.Header)
 	val = append(header, val...)
 	err = t.Send(val)
+	return err
+}
+
+// Close over transport
+func (t *TransportBasicIO) Close() error {
+
+	f, _ := os.OpenFile("close.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+
+	f.WriteString("Closing NETCONF Session with KILL: \r\n")
+	f.Sync()
+	f.Close()
+
+	val := []byte("</kill-session>")
+
+	header := []byte(xml.Header)
+	val = append(header, val...)
+	err := t.Send(val)
 	return err
 }
 

@@ -41,15 +41,34 @@ type TransportSSH struct {
 // Close closes an existing SSH session and socket if they exist.
 func (t *TransportSSH) Close() error {
 	// Close the SSH Session if we have one
+
 	if t.SSHSession != nil {
 		if err := t.SSHSession.Close(); err != nil && err.Error() != "EOF" {
 			return err
 		}
 	}
 
-	// Forcefully close and ignore any errors. This is playing up a bit. I think there's a race condition somewhere.
-	// TODO(investigate dodgy errors)
-	t.SSHClient.Close()
+	// Close and check for nil. Even though closed, it will retain data for session etc.
+	err := t.SSHClient.Close()
+
+	f, _ := os.OpenFile("errors.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+
+	if err == nil {
+		f.WriteString("Error was nil\r\n")
+	}
+
+	if err != nil {
+		f.WriteString(fmt.Sprintf("Error was: %+v\r\n", err))
+		panic(err)
+	}
+
+	err = t.TransportBasicIO.Close()
+	if err != nil {
+		return (err)
+	}
+
+	f.Sync()
+	f.Close()
 
 	return nil
 }
@@ -74,17 +93,24 @@ func (t *TransportSSH) DialSSH(target string, config *ssh.ClientConfig, port int
 		target = fmt.Sprintf("%s:%d", target, sshport)
 	}
 
-	var err error
-
-	t.SSHClient, err = ssh.Dial("tcp", target, config)
+	SSHClient, err := ssh.Dial("tcp", target, config)
 	if err != nil {
 		return err
 	}
+
+	t.SSHClient = SSHClient
+
+	f, _ := os.OpenFile("open.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+
+	f.WriteString(fmt.Sprintf("Native TransportSSH{} Client: %+v\r\n\r\n", t.SSHClient))
 
 	err = t.SetupSession()
 	if err != nil {
 		return err
 	}
+	f.WriteString(fmt.Sprintf("Post SetupSession() TransportSSH{} Client: %+v\r\n\r\n", t.SSHClient))
+	f.Sync()
+	f.Close()
 
 	return nil
 }
@@ -130,13 +156,15 @@ func NewSSHSession(conn net.Conn, config *ssh.ClientConfig) (*session.Session, e
 // Dial creates a new NETCONF session using a SSH Transport.
 // See TransportSSH.Dial for arguments.
 func Dial(target string, config *ssh.ClientConfig, port int) (*session.Session, error) {
-	var t TransportSSH
+	t := TransportSSH{}
 	err := t.DialSSH(target, config, port)
+
 	if err != nil {
 		return nil, err
 	}
 
 	s, err := session.NewSession(&t)
+
 	if err != nil {
 		return nil, err
 	}
